@@ -1,0 +1,62 @@
+"""
+Defines the Planning stage for the AI Agent.
+This stage helps the agent break down complex tasks into smaller, actionable steps.
+"""
+
+class PlanningStage:
+    def __init__(self):
+        # Initialize an empty plan
+        self.plan = []
+
+    def create_plan(self, task_description):
+        """
+        Creates a basic plan for a given task description.
+        :param task_description: A description of the task to plan.
+        :return: A list of steps in the plan.
+        """
+        # Placeholder logic for generating a plan
+        self.plan = [
+            f"Understand the task: {task_description}",
+            "Identify the required resources or information.",
+            "Break the task into smaller steps.",
+            "Execute each step sequentially.",
+            "Review the results and iterate if necessary."
+        ]
+        return self.plan
+
+    def add_step(self, step_description):
+        """
+        Adds a new step to the plan.
+        :param step_description: A description of the new step.
+        :return: Confirmation message.
+        """
+        self.plan.append(step_description)
+        return f"Step added to plan: '{step_description}'."
+
+    def remove_step(self, step_index):
+        """
+        Removes a specific step from the plan by index.
+        :param step_index: The index of the step to remove.
+        :return: Confirmation message or error if the index is invalid.
+        """
+        if 0 <= step_index < len(self.plan):
+            removed_step = self.plan.pop(step_index)
+            return f"Step removed: '{removed_step}'."
+        return "Invalid step index. No step removed."
+
+    def list_plan(self):
+        """
+        Lists all steps in the current plan.
+        :return: A numbered list of steps or a message if the plan is empty.
+        """
+        if self.plan:
+            return "\n".join([f"{i + 1}. {step}" for i, step in enumerate(self.plan)])
+        return "The plan is currently empty."
+
+    def clear_plan(self):
+        """
+        Clears the current plan.
+        :return: Confirmation message.
+        """
+        self.plan = []
+        return "The plan has been cleared.
