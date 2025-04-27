@@ -1,0 +1,64 @@
+"""
+Defines the Communication stage for the AI Agent.
+This stage handles interaction with external systems such as APIs, databases, or services.
+"""
+
+import requests
+
+class CommunicationStage:
+    def __init__(self):
+        # Initialization for communication stage
+        self.api_endpoints = {}
+
+    def register_api(self, name, endpoint):
+        """
+        Registers an API endpoint for future communication.
+        :param name: A unique name for the API.
+        :param endpoint: The URL of the API endpoint.
+        """
+        self.api_endpoints[name] = endpoint
+
+    def call_api(self, name, payload=None, headers=None, method="GET"):
+        """
+        Sends a request to a registered API endpoint.
+        :param name: The unique name of the API to call.
+        :param payload: The data to send with the request (for POST/PUT requests).
+        :param headers: Headers to include in the request.
+        :param method: The HTTP method to use (GET, POST, PUT, DELETE).
+        :return: The response from the API or an error message.
+        """
+        if name not in self.api_endpoints:
+            return f"Error: API '{name}' is not registered."
+
+        url = self.api_endpoints[name]
+        try:
+            if method.upper() == "GET":
+                response = requests.get(url, headers=headers, params=payload)
+            elif method.upper() == "POST":
+                response = requests.post(url, headers=headers, json=payload)
+            elif method.upper() == "PUT":
+                response = requests.put(url, headers=headers, json=payload)
+            elif method.upper() == "DELETE":
+                response = requests.delete(url, headers=headers, json=payload)
+            else:
+                return f"Error: HTTP method '{method}' is not supported."
+
+            return {
+                "status_code": response.status_code,
+                "content": response.json() if response.headers.get("Content-Type") == "application/json" else response.text
+            }
+        except requests.RequestException as e:
+            return f"Error: Failed to connect to '{url}'. Details: {str(e)}"
+
+    def fetch_data_from_url(self, url):
+        """
+        Fetches data directly from an external URL.
+        :param url: The URL to fetch data from.
+        :return: The content of the response or an error message.
+        """
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.text
+        except requests.RequestException as e:
+            return f"Error: Failed to fetch data from '{url}'. Details: {str(e)}"
