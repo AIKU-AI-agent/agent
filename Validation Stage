@@ -1,0 +1,70 @@
+"""
+Defines the Validation stage for the AI Agent.
+This stage ensures that inputs, plans, and external data meet specific criteria.
+"""
+
+class ValidationStage:
+    def __init__(self):
+        # Initialize validation rules (can be expanded as needed)
+        self.validation_rules = {
+            "non_empty": lambda x: bool(x.strip()) if isinstance(x, str) else x is not None,
+            "is_positive": lambda x: isinstance(x, (int, float)) and x > 0,
+            "is_in_range": lambda x, min_val, max_val: min_val <= x <= max_val,
+        }
+
+    def validate_non_empty(self, value):
+        """
+        Validates that a given value is non-empty.
+        :param value: The value to validate (string or other types).
+        :return: Boolean indicating whether the value is valid.
+        """
+        return self.validation_rules["non_empty"](value)
+
+    def validate_positive_number(self, value):
+        """
+        Validates that a given value is a positive number.
+        :param value: The value to validate.
+        :return: Boolean indicating whether the value is valid.
+        """
+        return self.validation_rules["is_positive"](value)
+
+    def validate_range(self, value, min_val, max_val):
+        """
+        Validates that a given value is within a specified range.
+        :param value: The value to validate.
+        :param min_val: The minimum allowed value.
+        :param max_val: The maximum allowed value.
+        :return: Boolean indicating whether the value is within range.
+        """
+        return self.validation_rules["is_in_range"](value, min_val, max_val)
+
+    def validate_plan(self, plan_steps):
+        """
+        Validates that a task plan contains valid steps.
+        :param plan_steps: List of plan steps to validate.
+        :return: Tuple (is_valid, message) indicating whether the plan is valid.
+        """
+        if not isinstance(plan_steps, list) or not plan_steps:
+            return False, "Plan must be a non-empty list of steps."
+
+        for index, step in enumerate(plan_steps):
+            if not self.validate_non_empty(step):
+                return False, f"Step {index + 1} is invalid: Plan steps cannot be empty."
+        return True, "Plan is valid."
+
+    def validate_input(self, input_value, validation_type="non_empty", **kwargs):
+        """
+        Validates a general input based on the specified validation type.
+        :param input_value: The input value to validate.
+        :param validation_type: The type of validation to perform (e.g., 'non_empty', 'is_positive', 'is_in_range').
+        :param kwargs: Additional parameters for the validation function (e.g., min_val, max_val).
+        :return: Tuple (is_valid, message) indicating the validation result.
+        """
+        if validation_type not in self.validation_rules:
+            return False, f"Unknown validation type: {validation_type}."
+
+        try:
+            is_valid = self.validation_rules[validation_type](input_value, **kwargs)
+            return is_valid, "Validation passed." if is_valid else "Validation failed."
+        except Exception as e:
+            return False, f"Validation error: {str(e)}."
