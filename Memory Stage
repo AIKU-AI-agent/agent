@@ -1,0 +1,57 @@
+"""
+Defines the Memory stage for the AI Agent.
+This stage handles storing and retrieving contextual information for continuity and decision-making.
+"""
+
+class MemoryStage:
+    def __init__(self):
+        # Initialize the memory as an empty dictionary
+        self.memory = {}
+
+    def store_context(self, key, value):
+        """
+        Stores a piece of information in the memory.
+        :param key: The key under which the information will be stored.
+        :param value: The information to store.
+        :return: Confirmation message.
+        """
+        self.memory[key] = value
+        return f"Context stored under key: '{key}'."
+
+    def retrieve_context(self, key):
+        """
+        Retrieves a piece of information from the memory.
+        :param key: The key of the information to retrieve.
+        :return: The stored information or an error message if the key is not found.
+        """
+        if key in self.memory:
+            return self.memory[key]
+        return f"No context found for key: '{key}'."
+
+    def delete_context(self, key):
+        """
+        Deletes a piece of information from the memory.
+        :param key: The key of the information to delete.
+        :return: Confirmation message or an error message if the key is not found.
+        """
+        if key in self.memory:
+            del self.memory[key]
+            return f"Context under key: '{key}' has been deleted."
+        return f"No context found for key: '{key}'."
+
+    def clear_memory(self):
+        """
+        Clears all stored information from the memory.
+        :return: Confirmation message.
+        """
+        self.memory.clear()
+        return "All stored context has been cleared."
+
+    def list_memory(self):
+        """
+        Lists all keys currently stored in the memory.
+        :return: A list of keys or a message if memory is empty.
+        """
+        if self.memory:
+            return list(self.memory.keys())
+        return "Memory is currently empty."
